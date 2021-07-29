@@ -1,0 +1,44 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  aws-sam-s3-handling-lambda
+
+  Sample SAM Template for aws-sam-s3-handling-lambda
+
+Parameters:
+#  BucketNamePrefix:
+#    Type: String
+#    Default: ygt-s3-handling
+  SampleBucketName:
+    Type: String
+    Default: ygt-s3-handling
+
+
+Resources:
+  CreatObject:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3handle/create_obj/
+      Handler: app.lambda_handler
+      Runtime: python3.8
+      Description: >-
+        Create a S3 object
+      MemorySize: 128
+      Timeout: 15
+      Policies:
+        - S3CrudPolicy:
+            # BucketName: !Sub "${BucketNamePrefix}-s3-handling"
+            BucketName: !Ref SampleBucketName
+      Environment:
+        Variables:
+          # BUCKET_NAME: !GetAtt Bucket.BucketName
+          # BUCKET_NAME: !Ref MyS3Bucket
+          # BUCKET_NAME: !Sub "${BucketNamePrefix}-s3-handling"
+          BUCKET_NAME: !Ref SampleBucketName
+          KEY_NAME: "sample_data.csv"
+
+  MyS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      # BucketName: !Sub "${BucketNamePrefix}-s3-handling"
+      BucketName: !Ref SampleBucketName
